@@ -64,7 +64,7 @@ class ImageDownloader:
             host = urlparse(url).hostname
             self.bad_hosts.add(host)
             self.bad_hosts.save()
-            print(f'add bad host: {host}')
+            logging.info('add bad host: %s', host)
             logging.error(e, exc_info=True)
             return None
 
@@ -73,7 +73,7 @@ class ImageDownloader:
             return True
         host = urlparse(url).hostname
         if self.bad_hosts.contains(host):
-            print(f'skip bad host: {host}')
+            logging.info('skip bad host: %s', url)
             return False
         data = self.get_file_data(url)
         if data is None:
@@ -99,7 +99,7 @@ class ImageDownloader:
             for item in items:
                 md5 = item['md5']
                 if md5 in self.downloaded_md5:
-                    print(f'skip md5: {md5}')
+                    logging.info('skip md5: %s', md5)
                     continue
 
                 img_url = item['image_url']
@@ -109,7 +109,7 @@ class ImageDownloader:
                 if self.download_file(img_url, file_path) or self.download_file(thumb_url, file_path):
                     self.downloaded_md5.add(md5)
                     count += 1
-                    print(f'downloaded: {keyword} ({count}/{self.num_per_kw})')
+                    logging.info('downloaded: %s (%d/%d)', keyword, count, self.num_per_kw)
                 if count >= self.num_per_kw:
                     break
 
