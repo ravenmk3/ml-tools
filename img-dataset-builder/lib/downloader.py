@@ -88,7 +88,7 @@ class ImageDownloader:
         page_num = 1
         count = 0
 
-        while page_num < 1000 and count < self.num_per_kw:
+        while page_num < 100 and count < self.num_per_kw:
             resp = self.fetch_list(keyword, page_num)
             if resp is None:
                 break
