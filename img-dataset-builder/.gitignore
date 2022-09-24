@@ -1,0 +1,10 @@
+.idea/
+.vs/
+.vscode/
+.conf/
+.data/
+__pycache__/
+*.exe
+*.bin
+*.db
+*.sqlite3
