@@ -1,0 +1,5 @@
+# -i https://mirror.baidu.com/pypi/simple
+
+pydantic
+requests
+click
