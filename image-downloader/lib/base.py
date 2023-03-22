@@ -5,11 +5,12 @@ from pydantic import BaseModel
 
 class ImageInfo(BaseModel):
     id: str
-    thumb_url: str
+    thumb_url: str | None
     medium_url: str | None
-    raw_url: str
+    original_url: str
     source_url: str | None
     source_host: str | None
+    source_title: str | None
     width: int | None
     height: int | None
     etag: str | None
@@ -20,7 +21,7 @@ class PageResult(BaseModel):
     keyword: str
     total: int | None
     page: int
-    page_size: int
+    page_size: int | None
     page_count: int | None
     images: list[ImageInfo]
 
@@ -34,7 +35,7 @@ class DataResult(BaseModel):
 class ImageClient(metaclass=ABCMeta):
 
     @abstractmethod
-    def search(self, keyword: str, page: int = 1) -> PageResult:
+    def search(self, keyword: str, page: int = 1, page_size: int = 20) -> PageResult:
         pass
 
     @abstractmethod
