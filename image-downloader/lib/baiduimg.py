@@ -92,4 +92,7 @@ class BaiduImageClient(ImageClient):
     def get_data(self, url: str) -> DataResult:
         resp = self._session.get(url, headers=HEADERS, timeout=(3, 5))
         resp.raise_for_status()
-        return DataResult(url=url, data=resp.content, headers=dict(resp.headers))
+        hdr = resp.headers
+        mime_type = hdr.get('Content-Type')
+        etag = hdr.get('ETag')
+        return DataResult(url=url, data=resp.content, mime_type=mime_type, etag=etag)

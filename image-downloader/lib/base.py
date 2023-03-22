@@ -29,7 +29,8 @@ class PageResult(BaseModel):
 class DataResult(BaseModel):
     url: str
     data: bytes
-    headers: dict
+    mime_type: str | None
+    etag: str | None
 
 
 class ImageClient(metaclass=ABCMeta):
