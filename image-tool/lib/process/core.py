@@ -57,11 +57,14 @@ class MultiThreadProcessor:
         self._start_worker_threads()
         self._start_saver_thread()
         self._load_items()
+        self.logger.info('loading finished')
         self._wait_worker_threads()
+        self.logger.info('process finished')
         self._wait_saver_thread()
+        self.logger.info('all done')
 
     def _scan_items(self):
-        self.logger.info('scanning items', )
+        self.logger.info('scanning items')
         item_names = self.scanner.scan()
         total = len(item_names)
         self.logger.info('items found: %d', total)
