@@ -1,8 +1,20 @@
 import logging
 import queue
+import sys
 import threading
 from abc import ABCMeta, abstractmethod
 from typing import Callable
+
+from tqdm import tqdm
+
+
+def _fixed_len_str(s: str, size: int = 53) -> str:
+    if len(s) > size:
+        n = int((size - 3) / 2)
+        pre = s[:n]
+        suf = s[-n:]
+        s = pre + '...' + suf
+    return s.ljust(size, ' ')
 
 
 class Item:
@@ -57,9 +69,7 @@ class MultiThreadProcessor:
         self._start_worker_threads()
         self._start_saver_thread()
         self._load_items()
-        self.logger.info('loading finished')
         self._wait_worker_threads()
-        self.logger.info('process finished')
         self._wait_saver_thread()
         self.logger.info('all done')
 
@@ -117,6 +127,9 @@ class MultiThreadProcessor:
             self.queue_loaded.task_done()
 
     def _run_saver_process(self):
+        total = len(self.item_names)
+        pbar = tqdm(total=total, file=sys.stdout)
+
         while True:
             item = self.queue_processed.get()
             if item is None:
@@ -127,3 +140,7 @@ class MultiThreadProcessor:
             except Exception as e:
                 self.logger.error(e, exc_info=True)
             self.queue_processed.task_done()
+
+            pbar.desc = _fixed_len_str(item.name)
+            pbar.update(1)
+        pbar.close()
