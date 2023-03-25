@@ -1,6 +1,8 @@
 import os
 from typing import Callable
 
+from lib.process.core import Scanner
+
 
 IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.bmp', '.webp']
 
@@ -37,3 +39,12 @@ def scan_image_files(dir_path: str) -> list[str]:
                 continue
             result.append(os.path.join(root, file))
     return result
+
+
+class ImageFileScanner(Scanner):
+
+    def __init__(self, root: str):
+        self.root = root
+
+    def scan(self) -> list[str]:
+        return scan_image_files(self.root)

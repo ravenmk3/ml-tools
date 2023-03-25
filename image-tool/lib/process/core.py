@@ -1,26 +1,46 @@
 import logging
-import os
 import queue
 import threading
+from abc import ABCMeta, abstractmethod
 from typing import Callable
 
 
-class WorkItem:
+class Item:
 
-    def __init__(self, filepath: str, content: any):
-        self.filepath = filepath
+    def __init__(self, name: str, content: any):
+        self.name = name
         self.content = content
         self.output = None
 
 
-class MultiThreadFileProcessor:
+class Scanner(metaclass=ABCMeta):
 
-    def __init__(self, src_dir: str,
-                 scanner: Callable, loader: Callable,
-                 processor: Callable, saver: Callable,
+    @abstractmethod
+    def scan(self) -> list[str]:
+        pass
+
+
+class Loader(metaclass=ABCMeta):
+
+    @abstractmethod
+    def load(self, name: str) -> any:
+        pass
+
+
+class Saver(metaclass=ABCMeta):
+
+    @abstractmethod
+    def save(self, item: Item):
+        pass
+
+
+class MultiThreadProcessor:
+
+    def __init__(self,
+                 scanner: Scanner, loader: Loader,
+                 processor: Callable, saver: Saver,
                  num_workers: int = 1, queue_size: int = 10):
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.src_dir = src_dir
         self.scanner = scanner
         self.loader = loader
         self.saver = saver
@@ -30,29 +50,28 @@ class MultiThreadFileProcessor:
         self.queue_processed = queue.Queue(maxsize=queue_size)
         self.worker_threads = None
         self.saver_thread = None
-        self.files = None
+        self.item_names = None
 
     def run(self):
-        self._scan_files()
+        self._scan_items()
         self._start_worker_threads()
         self._start_saver_thread()
-        self._load_files()
+        self._load_items()
         self._wait_worker_threads()
         self._wait_saver_thread()
 
-    def _scan_files(self):
-        self.logger.info('scanning files in %s', self.src_dir)
-        files = self.scanner(self.src_dir)
-        total = len(files)
-        self.logger.info('files found: %d', total)
-        self.files = files
+    def _scan_items(self):
+        self.logger.info('scanning items', )
+        item_names = self.scanner.scan()
+        total = len(item_names)
+        self.logger.info('items found: %d', total)
+        self.item_names = item_names
 
-    def _load_files(self):
-        for file in self.files:
-            rel_path = os.path.relpath(file, self.src_dir)
+    def _load_items(self):
+        for name in self.item_names:
             try:
-                data = self.loader(file)
-                item = WorkItem(rel_path, data)
+                data = self.loader.load(name)
+                item = Item(name, data)
                 self.queue_loaded.put(item)
             except Exception as e:
                 self.logger.error(e, exc_info=True)
@@ -85,7 +104,7 @@ class MultiThreadFileProcessor:
         while True:
             item = self.queue_loaded.get()
             if item is None:
-                self.logger.debug('get none item, break')
+                self.logger.debug('got none, break')
                 break
             try:
                 item.output = self.processor(item.content)
@@ -98,10 +117,10 @@ class MultiThreadFileProcessor:
         while True:
             item = self.queue_processed.get()
             if item is None:
-                self.logger.debug('get none item, break')
+                self.logger.debug('got none, break')
                 break
             try:
-                self.saver(item)
+                self.saver.save(item)
             except Exception as e:
                 self.logger.error(e, exc_info=True)
             self.queue_processed.task_done()
