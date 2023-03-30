@@ -1,6 +1,6 @@
 import os.path
 
-from lib.process.core import Saver, Item
+from lib.process.core import Saver, WorkItem
 
 
 class BinaryFileSaver(Saver):
@@ -11,10 +11,10 @@ class BinaryFileSaver(Saver):
         self.file_ext = file_ext
         self.dir_created = set()
 
-    def save(self, item: Item):
-        name = item.name
+    def save(self, item: WorkItem):
+        name = item.input.name
         if self.path_prefix:
-            name = os.path.relpath(item.name, self.path_prefix)
+            name = os.path.relpath(name, self.path_prefix)
         fullpath = os.path.join(self.dst_dir, name)
 
         dirpath = os.path.dirname(fullpath)
@@ -44,10 +44,10 @@ class ImageFileSaver(Saver):
         self.format = save_format.lower()
         self.dir_created = set()
 
-    def save(self, item: Item):
-        name = item.name
+    def save(self, item: WorkItem):
+        name = item.input.name
         if self.path_prefix:
-            name = os.path.relpath(item.name, self.path_prefix)
+            name = os.path.relpath(name, self.path_prefix)
         fullpath = os.path.join(self.dst_dir, name)
 
         dirpath = os.path.dirname(fullpath)
@@ -59,4 +59,4 @@ class ImageFileSaver(Saver):
         ext = _ext_of_format(self.format)
         fullpath = f'{path_no_ext}.{ext}'
 
-        item.output.save(fullpath, format=self.format, lossless=True)
+        item.output.save(fullpath, format=self.format)

@@ -17,11 +17,17 @@ def _fixed_len_str(s: str, size: int = 53) -> str:
     return s.ljust(size, ' ')
 
 
-class Item:
+class InputObject:
 
     def __init__(self, name: str, content: any):
         self.name = name
         self.content = content
+
+
+class WorkItem:
+
+    def __init__(self, input: InputObject):
+        self.input = input
         self.output = None
 
 
@@ -42,7 +48,7 @@ class Loader(metaclass=ABCMeta):
 class Saver(metaclass=ABCMeta):
 
     @abstractmethod
-    def save(self, item: Item):
+    def save(self, item: WorkItem):
         pass
 
 
@@ -84,7 +90,7 @@ class MultiThreadProcessor:
         for name in self.item_names:
             try:
                 data = self.loader.load(name)
-                item = Item(name, data)
+                item = WorkItem(InputObject(name, data))
                 self.queue_loaded.put(item)
             except Exception as e:
                 self.logger.error(e, exc_info=True)
@@ -120,7 +126,7 @@ class MultiThreadProcessor:
                 self.logger.debug('got none, break')
                 break
             try:
-                item.output = self.processor(item.content)
+                item.output = self.processor(item.input)
                 self.queue_processed.put(item)
             except Exception as e:
                 self.logger.error(e, exc_info=True)
@@ -141,6 +147,6 @@ class MultiThreadProcessor:
                 self.logger.error(e, exc_info=True)
             self.queue_processed.task_done()
 
-            pbar.desc = _fixed_len_str(item.name)
+            pbar.desc = _fixed_len_str(item.input.name)
             pbar.update(1)
         pbar.close()
