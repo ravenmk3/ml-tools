@@ -8,7 +8,7 @@ from typing import Callable
 from tqdm import tqdm
 
 
-def _fixed_len_str(s: str, size: int = 53) -> str:
+def _fixed_len_str(s: str, size: int = 43) -> str:
     if len(s) > size:
         n = int((size - 3) / 2)
         pre = s[:n]
