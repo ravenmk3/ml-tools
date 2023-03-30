@@ -19,7 +19,16 @@ def config_logging():
 @cli.command()
 @click.option('--src-dir', required=True)
 @click.option('--dst-dir', required=True)
-@click.option('--epochs', default=10, show_default=True)
+@click.option('--num_workers', default=10, show_default=True)
+def rename_md5(src_dir: str, dst_dir: str, num_workers: int):
+    from lib.tasks import rename_md5 as run
+    run(src_dir, dst_dir, num_workers)
+
+
+@cli.command()
+@click.option('--src-dir', required=True)
+@click.option('--dst-dir', required=True)
+@click.option('--num_workers', default=10, show_default=True)
 def rename_md5_conv_webp(src_dir: str, dst_dir: str, num_workers: int):
     from lib.tasks import rename_md5_conv_webp as run
     run(src_dir, dst_dir, num_workers)
