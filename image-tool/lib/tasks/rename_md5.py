@@ -24,7 +24,7 @@ def process(input: InputObject):
     return md5_hex(input.content)
 
 
-def rename_md5(src_dir: str, dst_dir: str, num_workers: int = 10):
+def run_rename_md5(src_dir: str, dst_dir: str, num_workers: int = 10):
     scanner = ImageFileScanner(src_dir)
     loader = BinaryFileLoader()
     saver = TargetSaver(dst_dir)

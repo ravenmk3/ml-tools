@@ -20,7 +20,6 @@ def max_rect_with_aspect_ratio(w: int, h: int, w_scale: int, h_scale: int,
     top = 0
     right = dst_w
     bottom = dst_h
-    print(dst_w, dst_h)
 
     if horizontal == 'left':
         pass

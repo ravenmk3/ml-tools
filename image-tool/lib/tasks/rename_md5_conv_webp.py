@@ -32,7 +32,7 @@ def process(input: InputObject):
     return (md5, bytes)
 
 
-def rename_md5_conv_webp(src_dir: str, dst_dir: str, num_workers: int = 10):
+def run_rename_md5_conv_webp(src_dir: str, dst_dir: str, num_workers: int = 10):
     scanner = ImageFileScanner(src_dir)
     loader = BinaryFileLoader()
     saver = TargetSaver(dst_dir)
