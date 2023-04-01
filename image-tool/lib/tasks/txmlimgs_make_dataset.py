@@ -1,6 +1,8 @@
 import os.path
+import random
 import shutil
 import sys
+import time
 from urllib.parse import urlparse
 
 from tqdm import tqdm
@@ -57,7 +59,8 @@ def write_label_file(labels: list[str], filename: str):
         fp.write(txt.encode('utf-8'))
 
 
-def run_txmlimgs_make_dataset(data_file: str, label_map_file: str, image_dir: str, output_dir: str):
+def run_txmlimgs_make_dataset(data_file: str, label_map_file: str, image_dir: str, output_dir: str,
+                              shuffule: bool = False, split: bool = False):
     """
     从已下载的 Tencent ML Images 数据集图片文件中创建数据集
     :param data_file: Tencent ML Images 的 train***_urls.txt
@@ -70,9 +73,27 @@ def run_txmlimgs_make_dataset(data_file: str, label_map_file: str, image_dir: st
     lines = _read_valid_lines(data_file)
     total = len(lines)
     num_copied = 0
+
+    if shuffule:
+        print('shuffling')
+        random.shuffle(lines)
     pbar = tqdm(lines, file=sys.stdout)
     pbar.desc = 'processing'
     os.makedirs(output_dir, exist_ok=True)
+    dst_dir = output_dir
+    dst_dirs = []
+
+    train_dir = os.path.join(output_dir, 'train')
+    val_dir = os.path.join(output_dir, 'val')
+    if split:
+        dst_dirs = [val_dir] + [train_dir] * 10
+        random.seed(int(time.time()))
+        os.makedirs(train_dir, exist_ok=True)
+        os.makedirs(val_dir, exist_ok=True)
+
+    all_label_file = os.path.join(output_dir, 'labels.txt')
+    all_labels = list(label_map.values())
+    write_label_file(all_labels, all_label_file)
 
     for line in pbar:
         url, labels = parse_line(line)
@@ -85,9 +106,12 @@ def run_txmlimgs_make_dataset(data_file: str, label_map_file: str, image_dir: st
         if size <= 0:
             continue
 
+        if split:
+            dst_dir = random.choice(dst_dirs)
+
         lbl_filename = label_filename_for(filename)
-        dst_filepath = os.path.join(output_dir, filename)
-        dst_lbl_path = os.path.join(output_dir, lbl_filename)
+        dst_filepath = os.path.join(dst_dir, filename)
+        dst_lbl_path = os.path.join(dst_dir, lbl_filename)
 
         shutil.copy(filepath, dst_filepath)
         write_label_file(label_names, dst_lbl_path)

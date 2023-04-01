@@ -64,9 +64,11 @@ def download_images(url_file: str, save_dir: str, shuffle: bool = False, proxy: 
 @click.option('--label-map', required=True)
 @click.option('--image-dir', required=True)
 @click.option('--output-dir', required=True)
-def txmlimgs_make_dataset(data_file: str, label_map: str, image_dir: str, output_dir: str):
+@click.option('--shuffle', default=False, show_default=True)
+@click.option('--split', default=False, show_default=True)
+def txmlimgs_make_dataset(data_file: str, label_map: str, image_dir: str, output_dir: str, shuffle: bool, split: bool):
     from lib.tasks import run_txmlimgs_make_dataset as run
-    run(data_file, label_map, image_dir, output_dir)
+    run(data_file, label_map, image_dir, output_dir, shuffle, split)
 
 
 if __name__ == '__main__':
