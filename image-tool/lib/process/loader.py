@@ -3,6 +3,12 @@ from PIL import Image
 from lib.process.core import Loader
 
 
+class NoOpLoader(Loader):
+
+    def load(self, name: str) -> any:
+        return name
+
+
 class BinaryFileLoader(Loader):
 
     def load(self, name: str) -> any:

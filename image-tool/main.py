@@ -48,6 +48,16 @@ def crop_with_aspect_ratio(src_dir: str, dst_dir: str, w_scale: int, h_scale: in
     run(src_dir, dst_dir, w_scale, h_scale, horizontal, vertical, num_workers)
 
 
+@cli.command()
+@click.option('--url-file', required=True)
+@click.option('--save-dir', required=True)
+@click.option('--shuffle', default=False, show_default=True)
+@click.option('--num-workers', default=10, show_default=True)
+def download_images(url_file: str, save_dir: str, shuffle: bool = False, num_workers: int = 10):
+    from lib.tasks import run_download_images as run
+    run(url_file, save_dir, shuffle, num_workers)
+
+
 if __name__ == '__main__':
     config_logging()
     cli()
