@@ -20,13 +20,19 @@ HEADERS = {
 
 class Downloader():
 
-    def __init__(self, max_attempts: int = 10):
+    def __init__(self, max_attempts: int = 10, proxy: str = None):
         self.max_attempts = max_attempts
+        self.proxy = proxy
         self.session = self.init_session()
 
     def init_session(self):
         session = requests.session()
         session.headers = HEADERS.copy()
+        if self.proxy:
+            session.proxies = {
+                'http': self.proxy,
+                'https': self.proxy
+            }
         return session
 
     def try_download_data(self, url: str) -> bytes | None:
@@ -64,8 +70,8 @@ class TaskLoader(Loader):
 
 class DownloadProcessor():
 
-    def __init__(self):
-        self.downloader = Downloader()
+    def __init__(self, proxy: str = None):
+        self.downloader = Downloader(proxy=proxy)
 
     def __call__(self, input: InputObject):
         exists, url = input.content
@@ -97,10 +103,10 @@ class TargetSaver(Saver):
             fp.write(data)
 
 
-def run_download_images(url_file: str, save_dir: str, shuffle: bool = False, num_workers: int = 10):
+def run_download_images(url_file: str, save_dir: str, shuffle: bool = False, proxy: str = None, num_workers: int = 10):
     scanner = UrlListFileScanner(url_file, shuffle)
     loader = TaskLoader(save_dir)
     saver = TargetSaver(save_dir)
-    processor = DownloadProcessor()
+    processor = DownloadProcessor(proxy)
     runner = MultiThreadProcessor(scanner, loader, processor, saver, num_workers)
     runner.run()
