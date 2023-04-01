@@ -59,6 +59,16 @@ def download_images(url_file: str, save_dir: str, shuffle: bool = False, proxy: 
     run(url_file, save_dir, shuffle, proxy, num_workers)
 
 
+@cli.command()
+@click.option('--data-file', required=True)
+@click.option('--label-map', required=True)
+@click.option('--image-dir', required=True)
+@click.option('--output-dir', required=True)
+def txmlimgs_make_dataset(data_file: str, label_map: str, image_dir: str, output_dir: str):
+    from lib.tasks import run_txmlimgs_make_dataset as run
+    run(data_file, label_map, image_dir, output_dir)
+
+
 if __name__ == '__main__':
     config_logging()
     cli()
