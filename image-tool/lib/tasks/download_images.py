@@ -21,6 +21,7 @@ HEADERS = {
 class Downloader():
 
     def __init__(self, max_attempts: int = 10, proxy: str = None):
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.max_attempts = max_attempts
         self.proxy = proxy
         self.session = self.init_session()
@@ -37,7 +38,11 @@ class Downloader():
 
     def try_download_data(self, url: str) -> bytes | None:
         for i in range(self.max_attempts):
-            resp = self.session.get(url, timeout=(5, 10))
+            try:
+                resp = self.session.get(url, timeout=(5, 10))
+            except Exception as e:
+                self.logger.error(e, exc_info=True)
+                continue
             if resp.ok:
                 return resp.content
             code = resp.status_code
