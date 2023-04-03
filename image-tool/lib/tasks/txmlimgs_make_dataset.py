@@ -38,7 +38,7 @@ def indices_to_names(label_map: dict[str, str], indices: list[str]):
         name = label_map.get(idx)
         if name:
             names.append(name)
-    return names
+    return list(set(names))
 
 
 def url_to_filename(url: str) -> str:
