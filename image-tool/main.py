@@ -61,6 +61,16 @@ def download_images(url_file: str, save_dir: str, shuffle: bool = False, proxy: 
 
 @cli.command()
 @click.option('--data-file', required=True)
+@click.option('--index-file', required=True)
+@click.option('--output-file', required=True)
+@click.option('--size-spec', default='z', show_default=True)
+def txmlimgs_filter_list(data_file: str, index_file: str, output_file: str, size_spec: str):
+    from lib.tasks import run_txmlimgs_filter_list as run
+    run(data_file, index_file, output_file, size_spec)
+
+
+@cli.command()
+@click.option('--data-file', required=True)
 @click.option('--label-map', required=True)
 @click.option('--image-dir', required=True)
 @click.option('--output-dir', required=True)

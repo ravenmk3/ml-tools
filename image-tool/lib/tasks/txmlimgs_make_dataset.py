@@ -60,7 +60,7 @@ def write_label_file(labels: list[str], filename: str):
 
 
 def run_txmlimgs_make_dataset(data_file: str, label_map_file: str, image_dir: str, output_dir: str,
-                              shuffule: bool = False, split: bool = False, limit: int = 0):
+                              shuffle: bool = False, split: bool = False, limit: int = 0):
     """
     从已下载的 Tencent ML Images 数据集图片文件中创建数据集
     :param data_file: Tencent ML Images 的 train***_urls.txt
@@ -74,7 +74,7 @@ def run_txmlimgs_make_dataset(data_file: str, label_map_file: str, image_dir: st
     total = len(lines)
     num_copied = 0
 
-    if shuffule:
+    if shuffle:
         print('shuffling')
         random.shuffle(lines)
 
