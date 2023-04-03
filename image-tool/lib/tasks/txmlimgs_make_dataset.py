@@ -77,8 +77,6 @@ def run_txmlimgs_make_dataset(data_file: str, label_map_file: str, image_dir: st
     if shuffule:
         print('shuffling')
         random.shuffle(lines)
-    if limit:
-        lines = lines[:limit]
 
     pbar = tqdm(lines, file=sys.stdout)
     pbar.desc = 'processing'
@@ -118,6 +116,9 @@ def run_txmlimgs_make_dataset(data_file: str, label_map_file: str, image_dir: st
 
         shutil.copy(filepath, dst_filepath)
         write_label_file(label_names, dst_lbl_path)
+
         num_copied += 1
+        if limit and num_copied >= limit:
+            break
 
     print(f'all done, total:{total}, copied:{num_copied}')
