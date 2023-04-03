@@ -94,6 +94,7 @@ def run_txmlimgs_make_dataset(data_file: str, label_map_file: str, image_dir: st
 
     all_label_file = os.path.join(output_dir, 'labels.txt')
     all_labels = list(label_map.values())
+    all_labels = list(set(all_labels))
     write_label_file(all_labels, all_label_file)
 
     for line in pbar:
