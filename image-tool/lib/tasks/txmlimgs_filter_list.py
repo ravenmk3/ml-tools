@@ -1,3 +1,4 @@
+import os
 import sys
 
 from tqdm import tqdm
@@ -22,7 +23,7 @@ def filter_lines(lines: list[str], match_tags: list[str], url_size_spec: str = N
     pbar.desc = 'filtering lines'
 
     if url_size_spec:
-        target_suffix = f'{url_size_spec}.jpg'
+        target_suffix = f'_{url_size_spec}.jpg'
     else:
         target_suffix = None
 
@@ -32,7 +33,7 @@ def filter_lines(lines: list[str], match_tags: list[str], url_size_spec: str = N
         if not is_line_matched(line, match_tags):
             continue
         if target_suffix:
-            line = line[:-5] + target_suffix
+            line = line.replace('_o.jpg', target_suffix)
         output.append(line)
     return output
 
@@ -59,6 +60,8 @@ def run_txmlimgs_filter_list(data_file: str, index_file: str, output_file: str, 
     print('filtered images:', num_output)
 
     print('saving to:', output_file)
+    dir_path = os.path.dirname(output_file)
+    os.makedirs(dir_path, exist_ok=True)
     with open(output_file, 'wb+') as fp:
         fp.write('\n'.join(output_lines).encode('ascii'))
     print('all done')
