@@ -35,6 +35,13 @@ def rename_md5_conv_webp(src_dir: str, dst_dir: str, num_workers: int):
 
 
 @cli.command()
+@click.option('--dir', required=True)
+def remove_empty_file(dir: str):
+    from lib.tasks import run_remove_empty_file as run
+    run(dir)
+
+
+@cli.command()
 @click.option('--src-dir', required=True)
 @click.option('--dst-dir', required=True)
 @click.option('--w-scale', default=4, show_default=True)
