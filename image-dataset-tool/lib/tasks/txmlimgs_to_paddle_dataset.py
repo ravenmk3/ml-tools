@@ -115,10 +115,11 @@ def run_txmlimgs_to_paddle_dataset(
 
         set_name = random.choice(set_names)
         set_dir, set_lines = subsets[set_name]
-        set_lines.append(f'{set_name}/{filename}\t{one_hot}')
+        set_lines.append(f'{filename}\t{one_hot}')
         dst_filepath = os.path.join(set_dir, filename)
-        shutil.copy(filepath, dst_filepath)
 
+        if not os.path.exists(dst_filepath):
+            shutil.copy(filepath, dst_filepath)
         num_copied += 1
         if limit and num_copied >= limit:
             break
