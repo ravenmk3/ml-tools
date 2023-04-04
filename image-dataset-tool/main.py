@@ -92,6 +92,20 @@ def txmlimgs_make_dataset(data_file: str, label_map: str, image_dir: str, output
     run(data_file, label_map, image_dir, output_dir, shuffle, split, limit)
 
 
+@cli.command()
+@click.option('--data-file', required=True)
+@click.option('--label-map', required=True)
+@click.option('--image-dir', required=True)
+@click.option('--output-dir', required=True)
+@click.option('--shuffle', default=False, show_default=True)
+@click.option('--split', default=False, show_default=True)
+@click.option('--limit', default=-1, show_default=True)
+def txmlimgs_to_paddle_dataset(data_file: str, label_map: str, image_dir: str, output_dir: str,
+                               shuffle: bool, split: bool, limit: int):
+    from lib.tasks import run_txmlimgs_to_paddle_dataset as run
+    run(data_file, label_map, image_dir, output_dir, shuffle, split, limit)
+
+
 if __name__ == '__main__':
     config_logging()
     cli()
