@@ -75,6 +75,18 @@ def merge_split_label_file(dataset: str, output_file: str):
 
 
 @cli.command()
+@click.option('--labels', required=True)
+@click.option('--input', required=True)
+@click.option('--output', required=True)
+@click.option('--input-sep', default=',', show_default=True)
+@click.option('--output-sep', default='', show_default=True)
+def named_label_to_one_hot(labels: str, input: str, output: str,
+                           input_sep: str, output_sep: str):
+    from lib.tasks import run_named_label_to_one_hot as run
+    run(labels, input, output, input_sep, output_sep)
+
+
+@cli.command()
 @click.option('--data-file', required=True)
 @click.option('--index-file', required=True)
 @click.option('--output-file', required=True)
