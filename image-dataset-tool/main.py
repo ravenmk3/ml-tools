@@ -67,6 +67,14 @@ def download_images(url_file: str, save_dir: str, shuffle: bool = False, proxy: 
 
 
 @cli.command()
+@click.option('--dataset', required=True)
+@click.option('--output-file', required=True)
+def merge_split_label_file(dataset: str, output_file: str):
+    from lib.tasks import run_merge_split_label_file as run
+    run(dataset, output_file)
+
+
+@cli.command()
 @click.option('--data-file', required=True)
 @click.option('--index-file', required=True)
 @click.option('--output-file', required=True)
