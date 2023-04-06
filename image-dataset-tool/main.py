@@ -87,6 +87,14 @@ def txmlimgs_extract_urls(data_file: str, output_file: str, size_spec: str):
 
 @cli.command()
 @click.option('--data-file', required=True)
+@click.option('--output-file', required=True)
+def txmlimgs_make_labelmap(data_file: str, output_file: str):
+    from lib.tasks import run_txmlimgs_make_labelmap as run
+    run(data_file, output_file)
+
+
+@cli.command()
+@click.option('--data-file', required=True)
 @click.option('--label-map', required=True)
 @click.option('--image-dir', required=True)
 @click.option('--output-dir', required=True)

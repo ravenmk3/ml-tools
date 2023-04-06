@@ -1,5 +1,6 @@
 # -i https://mirror.baidu.com/pypi/simple
 
 pillow
+pandas
 tqdm
 click
