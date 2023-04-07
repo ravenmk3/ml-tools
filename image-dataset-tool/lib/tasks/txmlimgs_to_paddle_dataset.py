@@ -51,7 +51,7 @@ def url_to_filename(url: str) -> str:
 
 def run_txmlimgs_to_paddle_dataset(
     data_file: str, label_map_file: str, image_dir: str, output_dir: str,
-    shuffle: bool = True, split: bool = True, limit: int = 0):
+    shuffle: bool = True, split: bool = True, limit: int = 0, data_only: bool = False):
     """
     从已下载的 Tencent ML Images 数据集图片文件中创建 PaddleClas 格式的数据集
     列表文件每行是 `{文件名}{制表符}{逗号分割的OneHot}` 如 `train/001.jpg  1,0,1,0,1`
@@ -100,11 +100,12 @@ def run_txmlimgs_to_paddle_dataset(
         filename = url_to_filename(url)
         filepath = os.path.join(image_dir, filename)
 
-        if not os.path.isfile(filepath):
-            continue
-        size = os.path.getsize(filepath)
-        if size <= 0:
-            continue
+        if not data_only:
+            if not os.path.isfile(filepath):
+                continue
+            size = os.path.getsize(filepath)
+            if size <= 0:
+                continue
 
         one_hot = ['0'] * num_names
         names = indices_to_names(label_map, labels)
@@ -118,11 +119,12 @@ def run_txmlimgs_to_paddle_dataset(
         set_lines.append(f'{filename}\t{one_hot}')
         dst_filepath = os.path.join(set_dir, filename)
 
-        if not os.path.exists(dst_filepath):
-            shutil.copy(filepath, dst_filepath)
-        num_copied += 1
-        if limit and num_copied >= limit:
-            break
+        if not data_only:
+            if not os.path.exists(dst_filepath):
+                shutil.copy(filepath, dst_filepath)
+            num_copied += 1
+            if limit and num_copied >= limit:
+                break
 
     for set_name, props in subsets.items():
         _, lines = props

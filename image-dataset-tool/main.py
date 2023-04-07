@@ -91,9 +91,10 @@ def named_label_to_one_hot(labels: str, input: str, output: str,
 @click.option('--index-file', required=True)
 @click.option('--output-file', required=True)
 @click.option('--size-spec', default='z', show_default=True)
-def txmlimgs_filter_list(data_file: str, index_file: str, output_file: str, size_spec: str):
+@click.option('--num-per-index', type=int, default=None, show_default=True)
+def txmlimgs_filter_list(data_file: str, index_file: str, output_file: str, size_spec: str, num_per_index: int):
     from lib.tasks import run_txmlimgs_filter_list as run
-    run(data_file, index_file, output_file, size_spec)
+    run(data_file, index_file, output_file, size_spec, num_per_index)
 
 
 @cli.command()
@@ -135,10 +136,11 @@ def txmlimgs_make_dataset(data_file: str, label_map: str, image_dir: str, output
 @click.option('--shuffle', default=False, show_default=True)
 @click.option('--split', default=False, show_default=True)
 @click.option('--limit', default=-1, show_default=True)
+@click.option('--data-only', type=bool, default=False, show_default=True)
 def txmlimgs_to_paddle_dataset(data_file: str, label_map: str, image_dir: str, output_dir: str,
-                               shuffle: bool, split: bool, limit: int):
+                               shuffle: bool, split: bool, limit: int, data_only):
     from lib.tasks import run_txmlimgs_to_paddle_dataset as run
-    run(data_file, label_map, image_dir, output_dir, shuffle, split, limit)
+    run(data_file, label_map, image_dir, output_dir, shuffle, split, limit, data_only)
 
 
 if __name__ == '__main__':

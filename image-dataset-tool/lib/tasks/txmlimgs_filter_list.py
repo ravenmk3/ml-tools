@@ -1,23 +1,57 @@
 import os
 import sys
+from abc import ABCMeta, abstractmethod
 
 from tqdm import tqdm
 
-
-def _read_valid_lines(filename: str) -> list[str]:
-    with open(filename, 'r') as fp:
-        lines = [line.strip() for line in fp.readlines()]
-    return [line for line in lines if len(line) > 0 and line[0] != '#']
+from lib.common.file import read_valid_lines
 
 
-def is_line_matched(line: str, match_tags: list[str]) -> bool:
-    for tag in match_tags:
-        if tag in line:
-            return True
-    return False
+class LineMatcher(metaclass=ABCMeta):
+
+    @abstractmethod
+    def match(self, line: str) -> bool:
+        pass
 
 
-def filter_lines(lines: list[str], match_tags: list[str], url_size_spec: str = None) -> list[str]:
+class SimpleLineMatcher(LineMatcher):
+
+    def __init__(self, tags: list[str]):
+        self.tags = tags.copy()
+
+    def match(self, line: str) -> bool:
+        for tag in self.tags:
+            if tag in line:
+                return True
+        return False
+
+
+class CountedLineMatcher(LineMatcher):
+
+    def __init__(self, tags: list[str], max_num: int):
+        self.orig_tags = tags.copy()
+        self.max_num = max_num
+        self.counts = {t: 0 for t in tags}
+        self.tags = set(tags.copy())
+
+    def match(self, line: str) -> bool:
+        matched = False
+        tags = self.tags.copy()
+        for tag in tags:
+            if tag in line:
+                matched = True
+                self._update(tag)
+        return matched
+
+    def _update(self, tag: str):
+        new_val = self.counts[tag] + 1
+        self.counts[tag] = new_val
+        if new_val >= self.max_num:
+            self.tags.remove(tag)
+
+
+def filter_lines(lines: list[str], match_tags: list[str],
+                 url_size_spec: str = None, num_per_index: int = None) -> list[str]:
     output = []
     pbar = tqdm(lines, file=sys.stdout)
     pbar.desc = 'filtering lines'
@@ -27,10 +61,15 @@ def filter_lines(lines: list[str], match_tags: list[str], url_size_spec: str = N
     else:
         target_suffix = None
 
+    if num_per_index:
+        matcher = CountedLineMatcher(match_tags, num_per_index)
+    else:
+        matcher = SimpleLineMatcher(match_tags)
+
     for line in pbar:
         if len(line) < 10 or line[0] == '#':
             continue
-        if not is_line_matched(line, match_tags):
+        if not matcher.match(line):
             continue
         if target_suffix:
             line = line.replace('_o.jpg', target_suffix)
@@ -38,7 +77,8 @@ def filter_lines(lines: list[str], match_tags: list[str], url_size_spec: str = N
     return output
 
 
-def run_txmlimgs_filter_list(data_file: str, index_file: str, output_file: str, url_size_spec: str = 'z'):
+def run_txmlimgs_filter_list(data_file: str, index_file: str, output_file: str,
+                             url_size_spec: str = 'z', num_per_index: int = None):
     """
     按指定标签索引过滤图片列表
     :param data_file: Tencent ML Images 的 train***_urls.txt
@@ -46,7 +86,7 @@ def run_txmlimgs_filter_list(data_file: str, index_file: str, output_file: str, 
     :param output_file: 输出的目标文件
     :param url_size_spec: URL 尺寸规格，可以选择 o, b, c, z, n, m, t, q, s
     """
-    desired_indices = _read_valid_lines(index_file)
+    desired_indices = read_valid_lines(index_file)
     match_tags = ['\t' + x + ':' for x in desired_indices]
     print('desired indices:', desired_indices)
 
@@ -55,7 +95,7 @@ def run_txmlimgs_filter_list(data_file: str, index_file: str, output_file: str, 
         content = fp.read().decode('ascii')
     input_lines = content.split('\n')
 
-    output_lines = filter_lines(input_lines, match_tags, url_size_spec)
+    output_lines = filter_lines(input_lines, match_tags, url_size_spec, num_per_index)
     num_output = len(output_lines)
     print('filtered images:', num_output)
 
