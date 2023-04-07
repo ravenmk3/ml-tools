@@ -121,7 +121,7 @@ def txmlimgs_make_labelmap(data_file: str, output_file: str):
 @click.option('--output-dir', required=True)
 @click.option('--shuffle', default=False, show_default=True)
 @click.option('--split', default=False, show_default=True)
-@click.option('--limit', default=-1, show_default=True)
+@click.option('--limit', default=0, show_default=True)
 def txmlimgs_make_dataset(data_file: str, label_map: str, image_dir: str, output_dir: str,
                           shuffle: bool, split: bool, limit: int):
     from lib.tasks import run_txmlimgs_make_dataset as run
@@ -135,7 +135,7 @@ def txmlimgs_make_dataset(data_file: str, label_map: str, image_dir: str, output
 @click.option('--output-dir', required=True)
 @click.option('--shuffle', default=False, show_default=True)
 @click.option('--split', default=False, show_default=True)
-@click.option('--limit', default=-1, show_default=True)
+@click.option('--limit', default=0, show_default=True)
 @click.option('--data-only', type=bool, default=False, show_default=True)
 def txmlimgs_to_paddle_dataset(data_file: str, label_map: str, image_dir: str, output_dir: str,
                                shuffle: bool, split: bool, limit: int, data_only):
