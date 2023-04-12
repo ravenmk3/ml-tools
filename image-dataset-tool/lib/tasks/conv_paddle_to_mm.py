@@ -24,7 +24,7 @@ def make_converter(multilabel: bool) -> Callable:
     return single_label_converter
 
 
-def run_paddle_to_mm(label_file: str, input_file: str, output_file: str, multilabel: bool = False):
+def run_conv_paddle_to_mm(label_file: str, input_file: str, output_file: str, multilabel: bool = False):
     """
     将 Paddle 标注格式转换为 OpenMMLab 标注格式
 

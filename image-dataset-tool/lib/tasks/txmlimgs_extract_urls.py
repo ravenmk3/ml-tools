@@ -27,6 +27,7 @@ def extract_urls(lines: list[str], size_spec: str = None) -> list[str]:
 def run_txmlimgs_extract_urls(data_file: str, output_file: str, size_spec: str = 'z'):
     """
     从图片+标签列表文件中提取出 URL 列表
+
     :param data_file: Tencent ML Images 的 train***_urls.txt
     :param output_file: 输出的目标文件
     :param size_spec: URL 尺寸规格，可以选择 o, b, c, z, n, m, t, q, s

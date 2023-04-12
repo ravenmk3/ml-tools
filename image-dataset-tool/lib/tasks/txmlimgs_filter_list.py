@@ -81,6 +81,7 @@ def run_txmlimgs_filter_list(data_file: str, index_file: str, output_file: str,
                              url_size_spec: str = 'z', num_per_index: int = None):
     """
     按指定标签索引过滤图片列表
+
     :param data_file: Tencent ML Images 的 train***_urls.txt
     :param index_file: 每行是一个 label index 的值，按这些值过滤
     :param output_file: 输出的目标文件

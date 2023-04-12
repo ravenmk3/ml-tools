@@ -20,10 +20,11 @@ def one_hot_encoder(all_names: list[str]) -> Callable:
     return encode
 
 
-def run_named_label_to_one_hot(label_file: str, input_file: str, output_file: str,
-                               input_sep: str = ',', output_sep: str = ','):
+def run_conv_name_to_one_hot(label_file: str, input_file: str, output_file: str,
+                             input_sep: str = ',', output_sep: str = ','):
     """
     将每行格式从 `{file}\t{name},{name},{name}` 转换为 `{file}\t0,1,0,1,0}`
+
     :param label_file: 包含所有标签名称的文件
     :param input_file: 输入的列表文件
     :param output_file: 输出的列表文件

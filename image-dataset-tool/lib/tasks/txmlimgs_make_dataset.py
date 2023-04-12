@@ -63,6 +63,7 @@ def run_txmlimgs_make_dataset(data_file: str, label_map_file: str, image_dir: st
                               shuffle: bool = False, split: bool = False, limit: int = 0):
     """
     从已下载的 Tencent ML Images 数据集图片文件中创建数据集
+
     :param data_file: Tencent ML Images 的 train***_urls.txt
     :param label_map_file: 标签索引到名称的映射文件每行格式如 `123:name`
     :param image_dir: 下载图片的目录

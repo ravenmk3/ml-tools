@@ -80,9 +80,9 @@ def merge_split_label_file(dataset: str, output_file: str):
 @click.option('--output', required=True)
 @click.option('--input-sep', default=',', show_default=True)
 @click.option('--output-sep', default='', show_default=True)
-def named_label_to_one_hot(labels: str, input: str, output: str,
-                           input_sep: str, output_sep: str):
-    from lib.tasks import run_named_label_to_one_hot as run
+def conv_name_to_one_hot(labels: str, input: str, output: str,
+                         input_sep: str, output_sep: str):
+    from lib.tasks import run_conv_name_to_one_hot as run
     run(labels, input, output, input_sep, output_sep)
 
 
@@ -91,8 +91,8 @@ def named_label_to_one_hot(labels: str, input: str, output: str,
 @click.option('--input', required=True)
 @click.option('--output', required=True)
 @click.option('--multilabel', is_flag=True)
-def paddle_to_mm(labels: str, input: str, output: str, multilabel: bool):
-    from lib.tasks import run_paddle_to_mm as run
+def conv_paddle_to_mm(labels: str, input: str, output: str, multilabel: bool):
+    from lib.tasks import run_conv_paddle_to_mm as run
     run(labels, input, output, multilabel)
 
 

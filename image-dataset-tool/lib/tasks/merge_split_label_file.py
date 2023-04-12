@@ -10,6 +10,7 @@ def run_merge_split_label_file(dataset_dir: str, output_file: str):
     """
     将所有图片对应的标签文件合并为一个列表
     """
+
     print('scanning image files')
     img_files = scan_image_files(dataset_dir)
     print('image files found:', len(img_files))
