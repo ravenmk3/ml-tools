@@ -49,7 +49,7 @@ def run_paddle_to_mm(label_file: str, input_file: str, output_file: str, multila
         file, anno = input_line.split('\t')
         output_list.append({
             'img_path': file,
-            'img_label': convert(anno),
+            'gt_label': convert(anno),
         })
 
     output_data = {
