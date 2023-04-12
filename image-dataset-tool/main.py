@@ -58,7 +58,7 @@ def crop_with_aspect_ratio(src_dir: str, dst_dir: str, w_scale: int, h_scale: in
 @cli.command()
 @click.option('--url-file', required=True)
 @click.option('--save-dir', required=True)
-@click.option('--shuffle', default=False, show_default=True)
+@click.option('--shuffle', is_flag=True)
 @click.option('--proxy', required=False, default=None, show_default=True)
 @click.option('--num-workers', default=10, show_default=True)
 def download_images(url_file: str, save_dir: str, shuffle: bool = False, proxy: str = None, num_workers: int = 10):
@@ -84,6 +84,16 @@ def named_label_to_one_hot(labels: str, input: str, output: str,
                            input_sep: str, output_sep: str):
     from lib.tasks import run_named_label_to_one_hot as run
     run(labels, input, output, input_sep, output_sep)
+
+
+@cli.command()
+@click.option('--labels', required=True)
+@click.option('--input', required=True)
+@click.option('--output', required=True)
+@click.option('--multilabel', is_flag=True)
+def paddle_to_mm(labels: str, input: str, output: str, multilabel: bool):
+    from lib.tasks import run_paddle_to_mm as run
+    run(labels, input, output, multilabel)
 
 
 @cli.command()
@@ -119,8 +129,8 @@ def txmlimgs_make_labelmap(data_file: str, output_file: str):
 @click.option('--label-map', required=True)
 @click.option('--image-dir', required=True)
 @click.option('--output-dir', required=True)
-@click.option('--shuffle', default=False, show_default=True)
-@click.option('--split', default=False, show_default=True)
+@click.option('--shuffle', is_flag=True)
+@click.option('--split', is_flag=True)
 @click.option('--limit', default=0, show_default=True)
 def txmlimgs_make_dataset(data_file: str, label_map: str, image_dir: str, output_dir: str,
                           shuffle: bool, split: bool, limit: int):
@@ -133,10 +143,10 @@ def txmlimgs_make_dataset(data_file: str, label_map: str, image_dir: str, output
 @click.option('--label-map', required=True)
 @click.option('--image-dir', required=True)
 @click.option('--output-dir', required=True)
-@click.option('--shuffle', default=False, show_default=True)
-@click.option('--split', default=False, show_default=True)
+@click.option('--shuffle', is_flag=True)
+@click.option('--split', is_flag=True)
 @click.option('--limit', default=0, show_default=True)
-@click.option('--data-only', type=bool, default=False, show_default=True)
+@click.option('--data-only', is_flag=True)
 def txmlimgs_to_paddle_dataset(data_file: str, label_map: str, image_dir: str, output_dir: str,
                                shuffle: bool, split: bool, limit: int, data_only):
     from lib.tasks import run_txmlimgs_to_paddle_dataset as run
