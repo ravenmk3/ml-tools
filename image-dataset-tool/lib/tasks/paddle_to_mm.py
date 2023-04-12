@@ -12,7 +12,12 @@ def make_converter(multilabel: bool) -> Callable:
         return int(val.strip())
 
     def multi_label_converter(val: str) -> list[int]:
-        return [int(x.strip()) for x in val.split(',')]
+        one_hot = [int(x.strip()) for x in val.split(',')]
+        labels = []
+        for i, v in enumerate(one_hot):
+            if v == 1:
+                labels.append(i)
+        return labels
 
     if multilabel:
         return multi_label_converter
@@ -22,6 +27,9 @@ def make_converter(multilabel: bool) -> Callable:
 def run_paddle_to_mm(label_file: str, input_file: str, output_file: str, multilabel: bool = False):
     """
     将 Paddle 标注格式转换为 OpenMMLab 标注格式
+
+    OpenMMLab 多标签标注格式参考：https://github.com/open-mmlab/mmpretrain/blob/main/mmpretrain/datasets/multi_label.py
+
     :param label_file: 包含所有标签名称的文件
     :param input_file: 输入的列表文件
     :param output_file: 输出的列表文件
