@@ -153,6 +153,16 @@ def txmlimgs_to_paddle_dataset(data_file: str, label_map: str, image_dir: str, o
     run(data_file, label_map, image_dir, output_dir, shuffle, split, limit, data_only)
 
 
+@cli.command()
+@click.option('--sample-dir', required=True)
+@click.option('--input-dir', required=True)
+@click.option('--output-dir', required=True)
+@click.option('--move', is_flag=True)
+def clip_similarity_classify(sample_dir: str, input_dir: str, output_dir: str, move: bool):
+    from lib.tasks.clip_similarity_classify import run_clip_similarity_classify as run
+    run(sample_dir, input_dir, output_dir, move)
+
+
 if __name__ == '__main__':
     config_logging()
     cli()
