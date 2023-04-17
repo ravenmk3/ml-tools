@@ -28,6 +28,15 @@ def clf_add_post_process(model: str, output: str, name_file: str, num_output: in
     run(model, output, name_file, num_output, multilabel, check)
 
 
+@cli.command()
+@click.option('--model', required=True)
+@click.option('--output', required=True)
+@click.option('--check', default=True, show_default=True)
+def clf_add_pre_process(model: str, output: str, check: bool):
+    from lib.tasks import clf_add_pre_process as run
+    run(model, output, check)
+
+
 if __name__ == '__main__':
     config_logging()
     cli()

@@ -19,8 +19,8 @@ def clf_add_post_process(model_path: str, output_file: str,
     prob_output_name = 'prob_output'
 
     o_output = outputs.pop()
-    o_output_node = find_node_by_output(nodes, o_output.name)
-    o_output_node.output[0] = head_output_name
+    o_output_node, o_output_idx = find_node_by_output(nodes, o_output.name)
+    o_output_node.output[o_output_idx] = head_output_name
 
     gather_index_node = onnx.helper.make_node(
         'Constant', inputs=[], outputs=['gather_index'], name='gather_index',
