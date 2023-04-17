@@ -1,0 +1,5 @@
+# -i https://mirror.baidu.com/pypi/simple
+
+numpy
+onnx
+click
