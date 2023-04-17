@@ -1,18 +1,8 @@
-from typing import Optional
-
 import onnx
-from google.protobuf.internal.containers import RepeatedCompositeFieldContainer
-from onnx import NodeProto, TensorProto
+from onnx import TensorProto
 
 from lib.common.file import read_valid_lines
-
-
-def find_node_by_output(nodes: RepeatedCompositeFieldContainer[NodeProto], output_name: str) -> Optional[NodeProto]:
-    for i in range(len(nodes)):
-        node = nodes[i]
-        if len(node.output) == 1 and node.output[0] == output_name:
-            return node
-    return None
+from lib.common.onnx_utils import find_node_by_output
 
 
 def clf_add_post_process(model_path: str, output_file: str,
